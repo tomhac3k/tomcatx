@@ -1,0 +1,7 @@
+- name: Install Tomcat 10
+  hosts: rocky
+  become: yes
+  roles:
+    - role: tomcat10install
+      vars:
+        tomcat_location: /opt/
