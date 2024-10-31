@@ -1,7 +1,7 @@
 - name: Install Tomcat 10
-  hosts: rocky
+  hosts: freebsd
   become: yes
   roles:
-    - role: tomcat10install
+    - role: tomcatx
       vars:
         tomcat_location: /opt/

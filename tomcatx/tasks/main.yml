@@ -1,0 +1,14 @@
+- name: Running Red Hat tasks
+  include_tasks: RedHat.yml
+  when: 
+    - ansible_facts['os_family'] == "RedHat"
+
+- name: Running Debian tasks
+  include_tasks: debian.yml
+  when:
+    - ansible_facts['os_family'] == "Debian"
+
+- name: Running FreeBSD tasks
+  include_tasks: freebsd.yml
+  when:
+    - ansible_facts['os_family'] == "FreeBSD"
