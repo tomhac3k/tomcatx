@@ -1,5 +1,5 @@
-# tasks file for tomcat installation on Debian OS
-
+---
+# tasks file for tomcat10install
 - name: Block to verify Enterprise linux versions
   block:
     - name: Verify OS Type and version
@@ -8,19 +8,18 @@
           - "Host OS Family is = {{ ansible_facts['os_family'] }}"
           - "Host Distribution Version is = {{ ansible_facts['distribution_version'] }}"
 
-    - name: Making sure all Neccessary packages are present
-      apt:
+    - name: Install java openjdk
+      zypper:
+        name: java
+        state: installed
+
+    - name: Install Neccessary Packages
+      zypper:
         name:
           - curl
           - tar
           - git
-          - ufw
-        state: present
-
-    - name: Install Tomcat and all dependencies
-      apt:
-        name: tomcat10
-        state: present
+        state: installed
 
     - name: Check Java Installation and Version
       command: "java -version"
@@ -48,6 +47,13 @@
     - name: Create tomcat User
       user:
         name: tomcat
+        uid: 110
+        state: present
+    
+    - name: Make sure tomcat group exist
+      group:
+        name: tomcat
+        gid: 110
         state: present
 
     - name: Set tomcat Ownership and file Permissions 
@@ -55,6 +61,7 @@
         path: "{{ tomcat_location }}tomcat10"
         owner: tomcat
         group: tomcat
+        state: directory
         recurse: true
 
     - name: Create tomcat service file
@@ -66,10 +73,12 @@
       systemd:
         daemon-reload: true
 
-    - name: Enable unfiltered firewall
-      community.general.ufw:
-        rule: allow
-        port: 8080
+    - name: Add firewall 8080 rule
+      firewalld:
+        port: 8080/tcp
+        state: enabled
+        permanent: true
+        immediate: true
 
     - name: Start tomcat service
       service:
@@ -87,10 +96,12 @@
         url: "http://{{ ansible_facts['fqdn'] }}:8080"
         status_code: 200
       register: url_status
+      delegate_to: localhost
 
     - name: Display Installation complete Message
       debug:
         msg: "Tomcat v10 Installation Complete on {{ ansible_facts['fqdn'] }}"
       when: url_status.status == 200
+      delegate_to: localhost
   when: 
-    - ansible_facts['os_family'] == "Debian"
+    - ansible_facts['os_family'] == "Suse"

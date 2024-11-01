@@ -1,0 +1,37 @@
+---
+
+- name: Block to verify Enterprise linux versions
+  block:
+    - name: Verify OS Type and version
+      debug:
+        msg:
+          - "Host OS Family is = {{ ansible_facts['os_family'] }}"
+          - "Host Distribution Version is = {{ ansible_facts['distribution_version'] }}"
+
+    - name: Downloading Tomcat
+      win_get_url:
+        url: https://downloads.apache.org/tomcat/tomcat-10/v10.0.27/bin/apache-tomcat-10.0.27.zip
+        dest: C:\temp\apache-tomcat-10.0.27.zip
+
+    - name: Unzip Tomcat packages
+      win_unzip:
+        src: C:\temp\apache-tomcat-10.0.27.zip
+        dest: C:\tomcat
+        remote_src: yes
+
+    - name: Set Environment Variables
+      win_environment:
+        state: present
+        name: CATALINA_HOME
+        value: C:\tomcat\apache-tomcat-10.0.27
+
+    - name: Install Tomcat service
+      win_command: C:\tomcat\apache-tomcat-10.0.27\bin\service.bat install
+
+    - name: Start Tomcat service
+      win_service:
+        name: Tomcat10
+        state: started
+  when: 
+    - ansible_facts['os_family'] == "Windows"
+  

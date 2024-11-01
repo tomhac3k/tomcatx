@@ -93,4 +93,4 @@
         msg: "Tomcat v10 Installation Complete on {{ ansible_facts['fqdn'] }}"
       when: url_status.status == 200
   when: 
-    - ansible_facts['os_family'] == "RedHat"
+    - ansible_facts['os_family'] == "Debian"

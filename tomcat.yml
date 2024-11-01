@@ -1,4 +1,6 @@
-- name: Install Tomcat 10
+# Tomcat Installation playbook for cross platform please type your hostname here before running the playbook
+
+- name: Install for cross platform
   hosts: freebsd
   become: yes
   roles:
