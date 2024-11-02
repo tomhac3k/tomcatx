@@ -94,3 +94,91 @@
       when: url_status.status == 200
   when: 
     - ansible_facts['os_family'] == "Debian"
+
+- name: Deploy a JAVA application
+  block:
+    - name: Test URL status from local machine
+      uri:
+        url: "http://{{ item.test_url }}"
+        status_code: 200
+      loop: "{{ test_urls }}"
+      delegate_to: localhost
+
+    - name: Stop the tomcat service
+      service:
+        name: tomcat
+        state: stopped
+
+    - name: Backup the previous version of the WAR files to /tmp directory
+      copy:
+        src: '{{ tomcat_location }}{{ item.file_name }}.war'
+        dest: '{{ backup_location }}{{ item.file_name }}.war'
+        remote_src: yes
+      loop: "{{ files }}"
+      ignore_errors: yes
+
+    - name: Remove the previous version of the WAR and expanded directory
+      file:
+        path: "{{ tomcat_location }}{{ item.file_name }}.war"
+        state: absent
+      loop: "{{ files }}"
+
+    - name: Remove the previous version of the expanded directory
+      file:
+        path: '{{ tomcat_location }}{{ item.file_name }}'
+        state: absent
+      loop: "{{ files }}"
+
+    - name: Verify the previous contents are gone
+      command: "ls -al {{ tomcat_location }}"
+      register: list_status
+
+    - name: Display list
+      debug:
+        var: list_status.stdout_lines
+
+    - name: Copy Deployment file to Document Root
+      copy:
+        src: '{{ item.war_src }}'
+        dest: '{{ tomcat_location }}{{ item.war_dest }}'
+      loop: "{{ new_wars }}"
+
+
+    - name: Set file permissions on Document Root
+      file: 
+        path: '{{ tomcat_location }}{{ item.war_dest }}'
+        mode: 0660
+        owner: tomcat
+        group: tomcat
+      loop: "{{ new_wars }}"
+
+    - name: Start tomcat service
+      service:
+        name: tomcat
+        state: restarted
+
+    - name: wait for 10 second for URL to load
+      wait_for:
+        timeout: 10
+
+    - name: Verify JAVA Application is deployed
+      command: 'ls -al {{ tomcat_location }}'
+      register: list_status
+
+    - name: Verify WAR file permissions
+      debug:
+        var: list_status.stdout_lines
+
+    - name: URL status block
+      block:
+        - name: Run URL status
+          uri:  
+            url: 'http://{{ item.test_url }}'
+            return_content: yes
+            status_code: 200
+          loop: "{{ test_urls }}"
+          delegate_to: localhost
+
+        - name: Display deployment status
+          debug:
+            msg: "WAR file Deployment successfully on {{ ansible_facts['fqdn'] }}"

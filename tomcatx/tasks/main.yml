@@ -1,22 +1,26 @@
 # Tasks for tomcat installation across platforms
 
-- name: Running Red Hat tasks
+- name: Running Red Hat Tasks
   include_tasks: RedHat.yml
   when: 
     - ansible_facts['os_family'] == "RedHat"
 
-- name: Running Debian tasks
+- name: Running Debian Tasks
   include_tasks: debian.yml
   when:
     - ansible_facts['os_family'] == "Debian"
 
-- name: Running FreeBSD tasks
+- name: Running FreeBSD Tasks
   include_tasks: freebsd2.yml
   when:
     - ansible_facts['os_family'] == "FreeBSD"
-
   
-- name: Running OpenSUSE tasks
+- name: Running OpenSUSE Tasks
   include_tasks: opensuse.yml
   when:
       - ansible_facts['os_family'] == "Suse"
+
+- name: Running Windows Tasks
+  include_tasks: Windows.yml
+  when:
+    - ansible_facts['os_family'] == "Windows"

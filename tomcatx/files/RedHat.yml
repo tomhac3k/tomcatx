@@ -157,9 +157,9 @@
         name: tomcat
         state: restarted
 
-    - name: wait for 10 second for URL to load
+    - name: wait for 20 second for URL to load
       wait_for:
-        timeout: 10
+        timeout: 20
 
     - name: Verify JAVA Application is deployed
       command: 'ls -al {{ tomcat_location }}'
