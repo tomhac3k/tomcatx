@@ -11,7 +11,7 @@
     - ansible_facts['os_family'] == "Debian"
 
 - name: Running FreeBSD Tasks
-  include_tasks: freebsd2.yml
+  include_tasks: freebsd.yml
   when:
     - ansible_facts['os_family'] == "FreeBSD"
   

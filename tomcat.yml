@@ -1,19 +1,21 @@
 # Tomcat Installation playbook for cross platform please type your hostname here before running the playbook
 
 - name: Install for cross platform
-  hosts: localhost
-  remote_user: tomcat
+  hosts: suse
+  #remote_user: tomcat
   become: yes
   roles:
     - role: tomcatx
       vars:
+        tomcat_webapps_location: /opt/tomcat10/webapps/
+        #tomcat_webapps_location: /usr/local/apache-tomcat-9.0/webapps/ #FREEBSD
         tomcat_location: /opt/
         test_urls:
           - test_url: "{{ ansible_facts['fqdn'] }}:8080/"
-          - test_url: "{{ ansible_facts['fqdn'] }}:8080/admin/"
+          #- test_url: "{{ ansible_facts['fqdn'] }}:8080/admin/"
         backup_location: /tmp/
         files:
-          - file_name: admin
+          - file_name: test
         new_wars:
-          - war_src: admin.war
-            war_dest: admin.war
+          - war_src: test.war
+            war_dest: test.war
