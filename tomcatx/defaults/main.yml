@@ -3,3 +3,27 @@
 # **This will be your tomcat installation location don't change this path if you're not sure.
 
 tomcat_location: /opt/
+# defaults file for tomcat installtion
+# these are the variables that will be used if there is no user variable defined.
+
+###### Test URL
+# This variable tests the
+
+test_urls:
+  - test_url: "{{ ansible_facts['fqdn'] }}:8080/"
+  - test_url: "{{ ansible_facts['fqdn'] }}:8080/admin/"
+
+# Mention here your tomcat location to wars
+
+tomcat_webapps_location: /opt/tomcat9/webapps/
+
+## files backup location and file names
+## Note Do not mention .war extension in file_name
+
+backup_location: /tmp/
+
+files:
+  - file_name: admin
+
+new_wars:
+  - war_src: admin.war

@@ -1,6 +1,6 @@
 ---
-# tasks file for tomcat10install
-- name: Block to verify Enterprise linux versions
+# tasks file for tomcat installation and deployment on OpenSUSE OS
+- name: Block to verify Platform OS type
   block:
     - name: Verify OS Type and version
       debug:
@@ -179,6 +179,7 @@
     - name: Verify WAR file permissions
       debug:
         var: list_status.stdout_lines
+
 
 - name: URL status block
   block:

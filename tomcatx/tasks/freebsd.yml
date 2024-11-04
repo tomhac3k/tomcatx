@@ -1,5 +1,5 @@
-# tasks file for tomcat installation on FreeBSD OS
-- name: Block to verify Enterprise linux versions
+# tasks file for tomcat installation and deployment on FreeBSD OS
+- name:  Block to verify Platform OS type
   block:
     - name: Verify OS Type and version
       debug:

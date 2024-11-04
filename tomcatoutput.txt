@@ -1,0 +1,160 @@
+
+PLAY [Install for cross platform] **********************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [localhost]
+
+TASK [tomcatx : Running Red Hat Tasks] *****************************************
+included: /home/mdtahmeed/MCA/tomcatx/tomcatx/tasks/RedHat.yml for localhost
+
+TASK [tomcatx : Verify OS Type and version] ************************************
+ok: [localhost] => {
+    "msg": [
+        "Host OS Family is = RedHat",
+        "Host Distribution Version is = 9.3"
+    ]
+}
+
+TASK [tomcatx : Install java openjdk] ******************************************
+ok: [localhost]
+
+TASK [tomcatx : Install Neccessary Packages] ***********************************
+ok: [localhost]
+
+TASK [tomcatx : Check Java Installation and Version] ***************************
+changed: [localhost]
+
+TASK [tomcatx : Displaying Java Installation and Version] **********************
+ok: [localhost] => {
+    "version.stderr_lines": [
+        "openjdk version \"1.8.0_412\"",
+        "OpenJDK Runtime Environment (build 1.8.0_412-b08)",
+        "OpenJDK 64-Bit Server VM (build 25.412-b08, mixed mode)"
+    ]
+}
+
+TASK [tomcatx : Download tomcat packages] **************************************
+changed: [localhost]
+
+TASK [tomcatx : Extract tar Archive] *******************************************
+changed: [localhost]
+
+TASK [tomcatx : Rename Folder apache-tomcat-10.0.27 to tomcat10] ***************
+changed: [localhost]
+
+TASK [tomcatx : Create tomcat User] ********************************************
+ok: [localhost]
+
+TASK [tomcatx : Set tomcat Ownership and file Permissions] *********************
+changed: [localhost]
+
+TASK [tomcatx : Create tomcat service file] ************************************
+changed: [localhost]
+
+TASK [tomcatx : Reload systemd] ************************************************
+ok: [localhost]
+
+TASK [tomcatx : Add firewall 8080 rule] ****************************************
+ok: [localhost]
+
+TASK [tomcatx : Start tomcat service] ******************************************
+ok: [localhost]
+
+TASK [tomcatx : Wait for Tomcat to load.] **************************************
+ok: [localhost]
+
+TASK [tomcatx : Load Tomcat URL] ***********************************************
+ok: [localhost]
+
+TASK [tomcatx : Display Installation complete Message] *************************
+ok: [localhost] => {
+    "msg": "Tomcat v10 Installation Complete on servera.example.com"
+}
+
+TASK [tomcatx : Test URL status from local machine] ****************************
+ok: [localhost] => (item={'test_url': 'servera.example.com:8080/'})
+
+TASK [tomcatx : Stop the tomcat service] ***************************************
+changed: [localhost]
+
+TASK [tomcatx : Backup the previous version of the WAR files to /tmp directory] ***
+failed: [localhost] (item={'file_name': 'admin'}) => {"ansible_loop_var": "item", "changed": false, "item": {"file_name": "admin"}, "msg": "Source /opt/tomcat10/webapps/admin.war not found"}
+...ignoring
+
+TASK [tomcatx : Remove the previous version of the WAR and expanded directory] ***
+ok: [localhost] => (item={'file_name': 'admin'})
+
+TASK [tomcatx : Remove the previous version of the expanded directory] *********
+ok: [localhost] => (item={'file_name': 'admin'})
+
+TASK [tomcatx : Verify the previous contents are gone] *************************
+changed: [localhost]
+
+TASK [tomcatx : Display list] **************************************************
+ok: [localhost] => {
+    "list_status.stdout_lines": [
+        "total 12",
+        "drwxr-x---.  7 tomcat tomcat   81 Oct  3  2022 .",
+        "drwxr-xr-x.  9 tomcat tomcat 4096 Nov  4 17:48 ..",
+        "drwxr-x---.  3 tomcat tomcat 4096 Nov  4 17:48 ROOT",
+        "drwxr-x---. 15 tomcat tomcat 4096 Nov  4 17:48 docs",
+        "drwxr-x---.  7 tomcat tomcat   99 Nov  4 17:48 examples",
+        "drwxr-x---.  6 tomcat tomcat   79 Nov  4 17:48 host-manager",
+        "drwxr-x---.  6 tomcat tomcat  114 Nov  4 17:48 manager"
+    ]
+}
+
+TASK [tomcatx : Copy Deployment file to Document Root] *************************
+changed: [localhost] => (item={'war_src': 'admin.war', 'war_dest': 'admin.war'})
+
+TASK [tomcatx : Set file permissions on Document Root] *************************
+changed: [localhost] => (item={'war_src': 'admin.war', 'war_dest': 'admin.war'})
+
+TASK [tomcatx : Start tomcat service] ******************************************
+changed: [localhost]
+
+TASK [tomcatx : wait for 10 second for URL to load] ****************************
+ok: [localhost]
+
+TASK [tomcatx : Verify JAVA Application is deployed] ***************************
+changed: [localhost]
+
+TASK [tomcatx : Verify WAR file permissions] ***********************************
+ok: [localhost] => {
+    "list_status.stdout_lines": [
+        "total 16",
+        "drwxr-x---.  8 tomcat tomcat  111 Nov  4 17:49 .",
+        "drwxr-xr-x.  9 tomcat tomcat 4096 Nov  4 17:48 ..",
+        "drwxr-x---.  3 tomcat tomcat 4096 Nov  4 17:48 ROOT",
+        "drwxr-x---.  3 tomcat tomcat   40 Nov  4 17:49 admin",
+        "-rw-rw----.  1 tomcat tomcat  476 Nov  4 17:49 admin.war",
+        "drwxr-x---. 15 tomcat tomcat 4096 Nov  4 17:48 docs",
+        "drwxr-x---.  7 tomcat tomcat   99 Nov  4 17:48 examples",
+        "drwxr-x---.  6 tomcat tomcat   79 Nov  4 17:48 host-manager",
+        "drwxr-x---.  6 tomcat tomcat  114 Nov  4 17:48 manager"
+    ]
+}
+
+TASK [tomcatx : Run URL status] ************************************************
+ok: [localhost] => (item={'test_url': 'servera.example.com:8080/'})
+
+TASK [tomcatx : Display deployment status] *************************************
+ok: [localhost] => {
+    "msg": "WAR file Deployment successfully on servera.example.com"
+}
+
+TASK [tomcatx : Running Debian Tasks] ******************************************
+skipping: [localhost]
+
+TASK [tomcatx : Running FreeBSD Tasks] *****************************************
+skipping: [localhost]
+
+TASK [tomcatx : Running OpenSUSE Tasks] ****************************************
+skipping: [localhost]
+
+TASK [tomcatx : Running Windows Tasks] *****************************************
+skipping: [localhost]
+
+PLAY RECAP *********************************************************************
+localhost                  : ok=34   changed=12   unreachable=0    failed=0    skipped=4    rescued=0    ignored=1   
+

@@ -1,6 +1,7 @@
 ---
+# tasks file for tomcat installation and deployment on Windows OS
 
-- name: Block to verify Enterprise linux versions
+- name: Block to verify Platform OS type
   block:
     - name: Verify OS Type and version
       debug:
